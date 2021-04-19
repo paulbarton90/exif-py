@@ -21,7 +21,7 @@ install:
 before_script:
   # stop here if linting fails
   - "pylint ./exifread/"
-  - "mypy --exclude '/__init__\.py$' ./exifread/"
+  - "mypy --exclude '/__init__.py$' ./exifread/"
 
 script:
   # get the test images
