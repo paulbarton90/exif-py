@@ -20,8 +20,8 @@ install:
 
 before_script:
   # stop here if linting fails
-  - "pylint ./exifread"
-  - "mypy ./exifread"
+  - "pylint ./exifread/"
+  - "mypy ./exifread/"
 
 script:
   # get the test images
