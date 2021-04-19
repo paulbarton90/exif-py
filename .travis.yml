@@ -13,7 +13,7 @@ matrix:
     dist: bionic
 
 before_install:
-  - "pip install pylint==2.5.3 mypy==0.782"
+  - "pip install pylint==2.5.3 mypy==0.782 'astroid>=2.4.0,<2.5'"
 
 install:
   - "pip install ."
