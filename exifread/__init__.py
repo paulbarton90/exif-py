@@ -153,7 +153,7 @@ def _find_jpeg_exif(fh: BinaryIO, data, fake_exif) -> tuple:
                 increment = increment_base(data, base)
                 logger.debug("  Got 0x%X and 0x%X instead", ord_(data[base]), ord_(data[base + 1]))
             except IndexError:
-                raise InvalidExif("Unexpected/unhandled segment type or file content.")
+                raise InvalidExif("Unexpected/unhandled segment type or file content.") from None
             else:
                 logger.debug("  Increment base by %s", increment)
                 base += increment
