@@ -1,5 +1,13 @@
 
-ifneq (,$(wildcard /.dockerenv))
+USE_PATH ?=
+
+ifeq (1, $(USE_PATH))
+	PYTHON_BIN := python3
+	PIP_BIN := pip3
+	PYLINT_BIN := pylint
+	MYPY_BIN := mypy
+	PIP_INSTALL := $(PIP_BIN) install --progress-bar=off
+else ifneq (,$(wildcard /.dockerenv))
 	PYTHON_BIN := /usr/local/bin/python3
 	PIP_BIN := /usr/local/bin/pip3
 	PYLINT_BIN := ~/.local/bin/pylint
@@ -43,4 +51,5 @@ help: Makefile
 	@echo "Choose a command to run:"
 	@echo
 	@grep --no-filename -E '^[a-zA-Z_%-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf " \033[36m%-30s\033[0m %s\n", $$1, $$2}'
-	@echo 
+	@echo
+

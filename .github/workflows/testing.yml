@@ -1,0 +1,80 @@
+name: Testing EXIF
+on: [push]
+jobs:
+  linting:
+    name: "Lint and Test (Python ${{ matrix.python }} on ${{ matrix.os }})"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: 3.5
+            os: ubuntu-16.04
+            test-pylint: false
+            experimental: false
+          - python: 3.6
+            os: ubuntu-16.04
+            test-pylint: true
+            experimental: false
+          - python: 3.7
+            os: ubuntu-16.04
+            test-pylint: true
+            experimental: false
+          - python: 3.8
+            os: ubuntu-18.04
+            test-pylint: true
+            experimental: false
+          - python: 3.9
+            os: ubuntu-18.04
+            test-pylint: false
+            experimental: false
+          - python: 3.8
+            os: macos-10.15
+            test-pylint: true
+            experimental: false
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Python ${{ matrix.python }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          # This path is specific to Ubuntu
+          path: ~/.cache/pip
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-pip-${{ matrix.python }}-${{ hashFiles('requirements-dev.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python }}-
+        if: ${{ !startsWith(matrix.python, 'pypy-') }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          make reqs-install
+        if: ${{ !startsWith(matrix.python, 'pypy-') }}
+        env:
+          USE_PATH: 1
+      - name: Running pylint
+        run: make lint
+        # Skip pylint for versions that are producing false positives and pypy
+        if: ${{ matrix.test-pylint && !startsWith(matrix.python, 'pypy-') }}
+        env:
+          USE_PATH: 1
+      - name: Running mypy
+        run: make mypy
+        if: ${{ !startsWith(matrix.python, 'pypy-') }}
+        env:
+          USE_PATH: 1
+      - name: Install EXIF.py
+        run: pip install .
+      - name: Make samples-download
+        run: make samples-download
+      - name: Sample File Test
+        run: | 
+          find exif-samples-master -name *.tiff -o -name *.jpg | sort -f | xargs EXIF.py > exif-samples-master/dump_test
+          diff -y --suppress-common-lines exif-samples-master/dump exif-samples-master/dump_test
+      - name: Test Color Output
+        run: find exif-samples-master -name *.tiff -o -name *.jpg | xargs EXIF.py -dc
