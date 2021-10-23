@@ -6,30 +6,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        python: [3.8]
+        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15]
+        test-pylint: [true]
+        experimental: [false]
         include:
           - python: 3.5
-            os: ubuntu-16.04
+            os: ubuntu-18.04
             test-pylint: false
             experimental: false
           - python: 3.6
-            os: ubuntu-16.04
+            os: ubuntu-18.04
             test-pylint: true
             experimental: false
           - python: 3.7
-            os: ubuntu-16.04
-            test-pylint: true
-            experimental: false
-          - python: 3.8
             os: ubuntu-18.04
             test-pylint: true
             experimental: false
           - python: 3.9
             os: ubuntu-18.04
             test-pylint: false
-            experimental: false
-          - python: 3.8
-            os: macos-10.15
-            test-pylint: true
             experimental: false
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
@@ -49,7 +45,7 @@ jobs:
           key: ${{ runner.os }}-pip-${{ matrix.python }}-${{ hashFiles('requirements-dev.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-${{ matrix.python }}-
-        if: ${{ !startsWith(matrix.python, 'pypy-') }}
+        if: ${{ !startsWith(matrix.python, 'pypy-') && startsWith(matrix.os, 'ubuntu-') }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
