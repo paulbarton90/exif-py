@@ -6,6 +6,7 @@ readme_file = open("README.rst", "rt").read()
 dev_requirements = [
     "mypy==0.931",
     "pylint==2.12.2",
+    "flake8==3.9.1"
 ]
 
 setup(
