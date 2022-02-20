@@ -2,8 +2,8 @@
 EXIF.py
 *******
 
-.. image:: https://travis-ci.org/ianare/exif-py.png
-        :target: https://travis-ci.org/ianare/exif-py
+.. image:: https://github.com/ianare/exif-py/actions/workflows/linting.yml/badge.svg
+        :target: https://github.com/ianare/exif-py/actions/workflows/linting.yml
 
 Easy to use Python module to extract Exif metadata from digital image files.
 
